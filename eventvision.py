@@ -5,7 +5,6 @@ This module contains classes, functions and an example (main) for handling AER v
 import glob
 import cv2
 import numpy as np
-from win32api import GetSystemMetrics
 import timer
 
 class Events(object):
@@ -256,93 +255,93 @@ class Events(object):
         #vector_all.tofile(aedat_file)
         aedat_file.close()
 
-def present_checkerboard(num_squares):
-    """
-    Presents a checkerboard pattern of size num_squares*num_squares on the screen.
-    The function will automatically detect the screen size in pixels and assume a
-    resolution of 96 dpi to provide the square size in mm.
-    """
-    screen_width_pixels = GetSystemMetrics(0)
-    screen_height_pixels = GetSystemMetrics(1)
-
-    #fixed parameters of the setup
-    figure_border_size = 30 #leave space of 100 pixels on each side of the axes for the figure
-                            #controls etc
-    #image_border_size = 10 #within the image, create a border of size 10
-                            #pixels to ensure contrast with the outside
-                                                       #rectangles
-
-    #How big is each rectangle in units of pixels?
-    screen_size_pixels = np.array([screen_width_pixels, screen_height_pixels])
-    screen_size_mm = 0.00254 * screen_size_pixels / 96
-    square_size_pixels = int(min(screen_size_pixels - 2 * figure_border_size) / (num_squares + 2))
-
-    image_border_size = np.array([1, 2])
-    image_border_size[0] = (screen_size_pixels[0] - figure_border_size * 2 - square_size_pixels * (num_squares)) / 2
-    image_border_size[1] = (screen_size_pixels[1] - figure_border_size * 2 - square_size_pixels * (num_squares)) / 2
-
-    #How big is each rectangle in units of millimeters?
-    square_size_mm = screen_size_mm * square_size_pixels / screen_size_pixels
-
-    #How big is the checkered part of the image
-    image_inner_dim = num_squares * square_size_pixels # the dimenstion of the inside of the image (not including the border)
-
-    #Create a black image to fit both the checkerboard and the image border
-    img_template = np.ones((image_inner_dim + 2 * image_border_size[1], image_inner_dim + 2 * image_border_size[0]))
-
-    ## create the checkerboard image
-    img = img_template
-
-    for x in range(0, num_squares):
-        for y in range((x) % 2, num_squares, 2):
-            minx = image_border_size[1] + (x) * square_size_pixels
-            maxx = image_border_size[1] + (x + 1) * square_size_pixels
-            miny = image_border_size[0] + (y) * square_size_pixels
-            maxy = image_border_size[0] + (y + 1) * square_size_pixels
-            img[minx:maxx, miny:maxy] = 1
-
-        for y in range((x + 1) % 2, num_squares, 2):
-            minx = image_border_size[1] + (x) * square_size_pixels
-            maxx = image_border_size[1] + (x + 1) * square_size_pixels
-            miny = image_border_size[0] + (y) * square_size_pixels
-            maxy = image_border_size[0] + (y + 1) * square_size_pixels
-            img[minx:maxx, miny:maxy] = 0
-            #xloc =
-            #range(image_borderSize+((x-1)*squareSize_pixels),(x*squareSize_pixels+image_borderSize))
-            #yloc =
-            #range(image_borderSize+((y-1)*squareSize_pixels),(y*squareSize_pixels+image_borderSize))
-            #img[[xloc],[yloc]] = 0
-
-    # display
-    cv2.imshow('image', img)
-    print 'Warning: Do not resize the checkerboard image window! It has been shown on the screen at a specific size which must be known for calibration'
-
-    print 'press any key when done recording images'
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    #print('Checkerboard rectangle size is:')
-    #print(['Vertical: ', num2str(squareSize_mm(2)), 'mm'])
-    #print(['Horizontal: ', num2str(squareSize_mm(1)), 'mm'])
-
-    #if num_flashes>1
-    #    print('Press any button to begin flashing...\n')
-    #    cv2.Waitkey(0)
-    #    cv2.imshow('image', img)
-    #    pause(1) %small pause
-    #
-    #    % flash 'num_flashes' times
-    #    for i = 1:num_flashes
-    #        imshow(imgTemplate')
-    #        drawnow
-    #        imshow(img')
-    #        drawnow
-    #    end
-    #end
-    #
-    #dX = squareSize_mm(1)
-    #dY = squareSize_mm(2)
-
-    return square_size_mm
+# def present_checkerboard(num_squares):
+#     """
+#     Presents a checkerboard pattern of size num_squares*num_squares on the screen.
+#     The function will automatically detect the screen size in pixels and assume a
+#     resolution of 96 dpi to provide the square size in mm.
+#     """
+#     screen_width_pixels = GetSystemMetrics(0)
+#     screen_height_pixels = GetSystemMetrics(1)
+#
+#     #fixed parameters of the setup
+#     figure_border_size = 30 #leave space of 100 pixels on each side of the axes for the figure
+#                             #controls etc
+#     #image_border_size = 10 #within the image, create a border of size 10
+#                             #pixels to ensure contrast with the outside
+#                                                        #rectangles
+#
+#     #How big is each rectangle in units of pixels?
+#     screen_size_pixels = np.array([screen_width_pixels, screen_height_pixels])
+#     screen_size_mm = 0.00254 * screen_size_pixels / 96
+#     square_size_pixels = int(min(screen_size_pixels - 2 * figure_border_size) / (num_squares + 2))
+#
+#     image_border_size = np.array([1, 2])
+#     image_border_size[0] = (screen_size_pixels[0] - figure_border_size * 2 - square_size_pixels * (num_squares)) / 2
+#     image_border_size[1] = (screen_size_pixels[1] - figure_border_size * 2 - square_size_pixels * (num_squares)) / 2
+#
+#     #How big is each rectangle in units of millimeters?
+#     square_size_mm = screen_size_mm * square_size_pixels / screen_size_pixels
+#
+#     #How big is the checkered part of the image
+#     image_inner_dim = num_squares * square_size_pixels # the dimenstion of the inside of the image (not including the border)
+#
+#     #Create a black image to fit both the checkerboard and the image border
+#     img_template = np.ones((image_inner_dim + 2 * image_border_size[1], image_inner_dim + 2 * image_border_size[0]))
+#
+#     ## create the checkerboard image
+#     img = img_template
+#
+#     for x in range(0, num_squares):
+#         for y in range((x) % 2, num_squares, 2):
+#             minx = image_border_size[1] + (x) * square_size_pixels
+#             maxx = image_border_size[1] + (x + 1) * square_size_pixels
+#             miny = image_border_size[0] + (y) * square_size_pixels
+#             maxy = image_border_size[0] + (y + 1) * square_size_pixels
+#             img[minx:maxx, miny:maxy] = 1
+#
+#         for y in range((x + 1) % 2, num_squares, 2):
+#             minx = image_border_size[1] + (x) * square_size_pixels
+#             maxx = image_border_size[1] + (x + 1) * square_size_pixels
+#             miny = image_border_size[0] + (y) * square_size_pixels
+#             maxy = image_border_size[0] + (y + 1) * square_size_pixels
+#             img[minx:maxx, miny:maxy] = 0
+#             #xloc =
+#             #range(image_borderSize+((x-1)*squareSize_pixels),(x*squareSize_pixels+image_borderSize))
+#             #yloc =
+#             #range(image_borderSize+((y-1)*squareSize_pixels),(y*squareSize_pixels+image_borderSize))
+#             #img[[xloc],[yloc]] = 0
+#
+#     # display
+#     cv2.imshow('image', img)
+#     print 'Warning: Do not resize the checkerboard image window! It has been shown on the screen at a specific size which must be known for calibration'
+#
+#     print 'press any key when done recording images'
+#     cv2.waitKey(0)
+#     cv2.destroyAllWindows()
+#     #print('Checkerboard rectangle size is:')
+#     #print(['Vertical: ', num2str(squareSize_mm(2)), 'mm'])
+#     #print(['Horizontal: ', num2str(squareSize_mm(1)), 'mm'])
+#
+#     #if num_flashes>1
+#     #    print('Press any button to begin flashing...\n')
+#     #    cv2.Waitkey(0)
+#     #    cv2.imshow('image', img)
+#     #    pause(1) %small pause
+#     #
+#     #    % flash 'num_flashes' times
+#     #    for i = 1:num_flashes
+#     #        imshow(imgTemplate')
+#     #        drawnow
+#     #        imshow(img')
+#     #        drawnow
+#     #    end
+#     #end
+#     #
+#     #dX = squareSize_mm(1)
+#     #dY = squareSize_mm(2)
+#
+#     return square_size_mm
 
 def auto_calibrate(num_squares, square_size_mm, scale, image_directory, image_format):
     """
@@ -673,7 +672,7 @@ def main():
     #perform camera calibration
     #first show the calibration pattern on the screen and make some recordings:
     num_squares = 10
-    square_size_mm = present_checkerboard(num_squares)
+    # square_size_mm = present_checkerboard(num_squares)
 
     #state where the recordings are what format they are in
     image_directory = 'path_to_calibration_images'
@@ -683,7 +682,7 @@ def main():
     scale = 4
 
     #call the calibration function and follow the instructions provided
-    ret, mtx, dist, rvecs, tvecs = auto_calibrate(num_squares, square_size_mm, scale, image_directory, image_format)
+    # ret, mtx, dist, rvecs, tvecs = auto_calibrate(num_squares, square_size_mm, scale, image_directory, image_format)
 
 if __name__ == "__main__":
     main()
